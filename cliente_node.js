@@ -1,23 +1,33 @@
-    var net = require('net');
-    
-function a(){
-    var cliente = new net.Socket();
-    cliente.connect(5000, 'moodle.inf.poa.ifrs.edu.br', function(){
+const net = require('net');
+const express = require('express');
+const app = express();
+const port = 3000;
+let dateMessage;
+
+app.listen(port, () => {
+    console.log(`Porta ${port}`)
+})
+
+function connectTCP() {
+    const cliente = new net.Socket();
+    cliente.connect(5000, 'moodle.inf.poa.ifrs.edu.br', function () {
         console.log("alo")
         cliente.write('a');
     });
 
-    cliente.on('data', function (message){
+    cliente.on('data', function (message) {
         console.log(`Received message: ${message}`);
-        document.getElementById('teste').value = 'teste';
-        alert('aafasfasf');
-
+        dateMessage = message;
         cliente.destroy();
     });
 
-    cliente.on('close', function() {
+    cliente.on('close', function () {
         console.log('Connection closed');
     });
 }
 
-document.onload = a();
+connectTCP();
+app.get('/', (req, res) => {
+    res.send(`${dateMessage}`)
+})
+
